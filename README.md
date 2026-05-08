@@ -6,33 +6,33 @@
 [![Platform](https://img.shields.io/badge/Platform-cross--platform-purple.svg)](#)
 [![Language](https://img.shields.io/badge/Language-Python%20%7C%20Markdown-yellow.svg)](#)
 
-> A Claude Code skill that converts local image references in Markdown files to base64 data URIs, making your MD files fully self-contained.
+> 将 Markdown 文件中的本地图片引用转为 base64 内嵌，让一个 MD 文件就能独立显示所有图片。
 
-## The Problem
+## 痛点
 
-You have a Markdown file with images:
+你有一个带图片的 Markdown 文件：
 
 ```markdown
 ![架构图](./images/architecture.png)
 ![结果图](E:\comet\result.png)
 ```
 
-When you send this `.md` file to someone else — they see **broken images**. The images are separate files on *your* machine.
+把这个 `.md` 发给别人——**图片全裂了**。因为图片在*你的*电脑上，别人没有。
 
-## The Solution
+## 解决方案
 
-`md-image-embed` converts all local image paths to inline base64:
+`md-image-embed` 把所有本地图片路径转成 base64 内嵌：
 
 ```markdown
 ![架构图](data:image/png;base64,iVBORw0KGgoAAAANSUhEUg...)
 ![结果图](data:image/png;base64,R0lGODlhAQABAIAAAAAAAP...)
 ```
 
-**One file. All images included. Send it anywhere.**
+**一个文件，图片全在里面，发给谁都看得见。**
 
-## Demo
+## 效果演示
 
-### Before — images break when shared
+### 转换前——发给别人图片全裂
 
 ```
 论文阅读/
@@ -42,64 +42,64 @@ When you send this `.md` file to someone else — they see **broken images**. Th
 │   └── figure2.png
 ```
 
-### After — single self-contained file
+### 转换后——一个文件搞定
 
 ```
 笔记.md                  ← 直接发这一个，图片全在里面
 ```
 
-### Example images from real usage
+### 实际使用示例图片
 
-These images are embedded directly in the demo markdown files:
+以下图片直接内嵌在 demo markdown 文件中：
 
-| Figure | Description |
-|--------|-------------|
-| ![Figure 1](demo/figure1.png) | Research framework overview |
-| ![Figure 2](demo/figure2.png) | Model architecture diagram |
-| ![Figure 3](demo/figure3.png) | Experimental results |
-| ![Figure 4](demo/figure4.png) | Overall pipeline |
+| 图片 | 说明 |
+|------|------|
+| ![Figure 1](demo/figure1.png) | 研究框架概览 |
+| ![Figure 2](demo/figure2.png) | 模型架构图 |
+| ![Figure 3](demo/figure3.png) | 实验结果 |
+| ![Figure 4](demo/figure4.png) | 整体流程图 |
 
-## Features
+## 功能特性
 
-- **Automatic detection** — finds all `![alt](path)` image references
-- **Smart skipping** — ignores already-embedded base64 and remote URLs (http/https)
-- **URL decoding** — handles paths with `%20` and other encoded characters
-- **Relative path support** — resolves paths relative to the MD file location
-- **Wide format support** — PNG, JPG, GIF, SVG, WebP, BMP, TIFF
+- **自动检测** — 扫描所有 `![alt](path)` 格式的图片引用
+- **智能跳过** — 已经是 base64 的和远程 URL（http/https）不会重复处理
+- **URL 解码** — 自动处理路径中的 `%20` 等编码字符
+- **相对路径支持** — 基于 MD 文件所在目录解析相对路径
+- **格式广泛** — 支持 PNG、JPG、GIF、SVG、WebP、BMP、TIFF
 
-## Usage
+## 使用方式
 
-### As a Claude Code Skill
+### 作为 Claude Code Skill 使用
 
-This is a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill. Install it and just ask:
+这是一个 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) 技能。安装后直接说：
 
 ```
 把这个 md 的图片内嵌进去，我只发一个文件
 ```
 
-Or use the slash command:
+或者使用斜杠命令：
 
 ```
 /md-image-embed
 ```
 
-### Manual Installation
+### 手动安装
 
-Copy the `SKILL.md` file to your Claude Code skills directory:
+将 `SKILL.md` 复制到 Claude Code 的 skills 目录：
 
 ```bash
-# Project-level
+# 项目级安装
 mkdir -p .claude/skills/md-image-embed
 cp SKILL.md .claude/skills/md-image-embed/
 
-# Or user-level
+# 或用户级安装
 mkdir -p ~/.claude/skills/md-image-embed
 cp SKILL.md ~/.claude/skills/md-image-embed/
 ```
 
-### Standalone Usage
+### 独立使用（Python 脚本）
 
-The core logic is a Python script. You can run it directly:
+核心逻辑是 Python 脚本，可以直接运行：
 
 ```python
 import base64, re, os
@@ -128,28 +128,28 @@ def embed_images(md_path):
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write(result)
 
-# Usage
-embed_images('your-notes.md')
+# 使用
+embed_images('你的笔记.md')
 ```
 
-## When to Use
+## 适用场景
 
-| Scenario | Use it? |
-|----------|---------|
-| Sending a single MD file to someone | Yes |
-| MD with local/absolute image paths | Yes |
-| Images already hosted on the web | No (skipped automatically) |
-| Images already base64 embedded | No (skipped automatically) |
-| Large images (>5MB each) | Consider resizing first |
+| 场景 | 是否适用 |
+|------|---------|
+| 把 MD 文件单独发给别人 | 适用 |
+| MD 中有本地/绝对路径图片 | 适用 |
+| 图片已经是远程 URL | 不适用（自动跳过） |
+| 图片已经 base64 内嵌 | 不适用（自动跳过） |
+| 超大图片（>5MB） | 建议先压缩 |
 
-## File Size Note
+## 文件大小说明
 
-Base64 encoding increases data size by ~33%. A 1MB image becomes ~1.3MB in the MD file. For files with many large images, consider:
+Base64 编码会让数据量增大约 33%。1MB 的图片在 MD 中约 1.3MB。如果图片很多很大，建议：
 
-- Resizing images before embedding
-- Using image compression tools
-- The tradeoff: slightly larger file vs. zero broken images
+- 先压缩/缩放图片再内嵌
+- 使用图片压缩工具
+- 权衡：文件稍大 vs. 图片永远不会裂
 
-## License
+## 许可证
 
 [MIT](LICENSE)
