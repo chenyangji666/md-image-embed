@@ -1,5 +1,11 @@
 # md-image-embed
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-orange.svg)](https://docs.anthropic.com/en/docs/claude-code)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](#)
+[![Platform](https://img.shields.io/badge/Platform-cross--platform-purple.svg)](#)
+[![Language](https://img.shields.io/badge/Language-Python%20%7C%20Markdown-yellow.svg)](#)
+
 > A Claude Code skill that converts local image references in Markdown files to base64 data URIs, making your MD files fully self-contained.
 
 ## The Problem
